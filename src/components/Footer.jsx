@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import runningManLogo from '../assets/running-man.svg';
 
 function Footer() {
+  const navigate = useNavigate();
+
   return (
     <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6 mt-12 shadow-inner transition-all duration-500">
       <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 gap-4">
@@ -14,15 +17,15 @@ function Footer() {
         </div>
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 text-base">
           <a
-            href="/privacy-policy"
-            className="text-gray-500 dark:text-gray-300 hover:text-blue-700 dark:hover:text-white transition underline underline-offset-4"
+            onClick={() => navigate('/privacy-policy')}
+            className="cursor-pointer text-gray-500 dark:text-gray-300 hover:text-blue-700 dark:hover:text-white transition underline underline-offset-4"
           >
             Privacy Policy
           </a>
           <span className="hidden md:inline text-gray-400">|</span>
           <a
-            href="/terms-of-service"
-            className="text-gray-500 dark:text-gray-300 hover:text-blue-700 dark:hover:text-white transition underline underline-offset-4"
+            onClick={() => navigate('/terms-of-service')}
+            className="cursor-pointer text-gray-500 dark:text-gray-300 hover:text-blue-700 dark:hover:text-white transition underline underline-offset-4"
           >
             Terms of Service
           </a>
