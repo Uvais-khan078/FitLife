@@ -6,6 +6,7 @@ import SleepTraker from './pages/SleepTraker';
 import WorkoutTraker from './pages/WorkoutTraker';
 import WeightTraker from './pages/WeightTraker';
 import ErrorPage from './pages/ErrorPage';
+import Test from './pages/Test';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/workout-traker" element={<WorkoutTraker />}/>
         <Route path="/sleep-traker" element={<SleepTraker />}/>
         <Route path="/weight-traker" element={<WeightTraker />}/>
+        <Route path="/Dev" element={<Test />}/>
         <Route path="*" element={<ErrorPage />} />
         </Routes>
     </Router>
