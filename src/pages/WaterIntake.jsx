@@ -71,6 +71,23 @@ function WaterIntake() {
   const [fact, setFact] = useState(() => getRandomFact());
   const [factAnim, setFactAnim] = useState(false);
 
+  const [data, setData] = useState(() => {
+    const savedData = JSON.parse(localStorage.getItem("waterHistory")) || [];
+    return {
+        labels: savedData.length > 0 ? savedData.map((_, index) => `Day ${index + 1}`) : ["Day 1"],
+        datasets: [
+            {
+                label: "Water Intake (L)",
+                data: savedData.length > 0 ? savedData.map((entry) => entry.intake / 1000) : [0],
+                fill: true,
+                backgroundColor: "rgba(59, 130, 246, 0.3)",
+                borderColor: "rgba(59, 130, 246, 1)",
+                tension: 0.3,
+            },
+        ],
+    };
+});
+
   // Change fact every minute
   useEffect(() => {
     const interval = setInterval(() => {
@@ -152,7 +169,7 @@ function WaterIntake() {
     }
   }
 
-  const data = {
+  const dataChart = {
     labels,
     datasets: [
       {
@@ -232,7 +249,21 @@ function WaterIntake() {
     localStorage.removeItem("waterIntakeDate");
     setCupsClicked(Array(TOTAL_CUPS).fill(false));
     setHistory([]);
-    setCurrentDate(new Date().toISOString().slice(0, 10));
+
+    // Reset graph data to show only one day with zero intake
+    setData({
+        labels: ["Day 1"],
+        datasets: [
+            {
+                label: "Water Intake (L)",
+                data: [0],
+                fill: true,
+                backgroundColor: "rgba(59, 130, 246, 0.3)",
+                borderColor: "rgba(59, 130, 246, 1)",
+                tension: 0.3,
+            },
+        ],
+    });
   };
 
   // Handler for clicking the card
@@ -241,6 +272,102 @@ function WaterIntake() {
     setFactAnim(true);
     setTimeout(() => setFactAnim(false), 600);
   };
+
+  const handleNextDay = () => {
+    const today = history.length > 0 ? new Date(history[history.length - 1].date) : new Date();
+    const intakeCount = cupsClicked.filter(Boolean).length;
+
+    // Add today's data to history
+    const updatedHistory = [...history];
+    const todayDate = today.toISOString().slice(0, 10);
+    const todayIndex = updatedHistory.findIndex((entry) => entry.date === todayDate);
+
+    if (todayIndex !== -1) {
+        updatedHistory[todayIndex].intake = intakeCount * CUP_VOLUME_ML;
+    } else {
+        updatedHistory.push({ date: todayDate, intake: intakeCount * CUP_VOLUME_ML });
+    }
+
+    // Ensure only the last 7 days are kept
+    if (updatedHistory.length > 7) {
+        updatedHistory.splice(0, updatedHistory.length - 7);
+    }
+
+    setHistory(updatedHistory);
+    localStorage.setItem("waterHistory", JSON.stringify(updatedHistory));
+
+    // Update graph data and labels with days
+    const labels = updatedHistory.map((_, index) => `Day ${index + 1}`);
+    setData({
+        labels,
+        datasets: [
+            {
+                label: "Water Intake (L)",
+                data: updatedHistory.map((entry) => entry.intake / 1000),
+                fill: true,
+                backgroundColor: "rgba(59, 130, 246, 0.3)",
+                borderColor: "rgba(59, 130, 246, 1)",
+                tension: 0.3,
+            },
+        ],
+    });
+
+    // Move to the next day
+    today.setDate(today.getDate() + 1);
+    const nextDayDate = today.toISOString().slice(0, 10);
+
+    // Clear cups for the new day
+    const resetCups = Array(TOTAL_CUPS).fill(false);
+    setCupsClicked(resetCups);
+    localStorage.setItem("cupsClicked", JSON.stringify(resetCups));
+
+    // Ensure the graph reflects the new day
+    if (!updatedHistory.some((entry) => entry.date === nextDayDate)) {
+        updatedHistory.push({ date: nextDayDate, intake: 0 });
+        setHistory(updatedHistory);
+        localStorage.setItem("waterHistory", JSON.stringify(updatedHistory));
+
+        const updatedLabels = updatedHistory.map((_, index) => `Day ${index + 1}`);
+        setData({
+            labels: updatedLabels,
+            datasets: [
+                {
+                    label: "Water Intake (L)",
+                    data: updatedHistory.map((entry) => entry.intake / 1000),
+                    fill: true,
+                    backgroundColor: "rgba(59, 130, 246, 0.3)",
+                    borderColor: "rgba(59, 130, 246, 1)",
+                    tension: 0.3,
+                },
+            ],
+        });
+    }
+};
+  useEffect(() => {
+    const todayIntake = cupsClicked.filter(Boolean).length * CUP_VOLUME_ML;
+    const updatedGraphData = [...history, { date: currentDate, intake: todayIntake }];
+
+    const labels = updatedGraphData.map((_, index) => `Day ${index + 1}`);
+    const dataValues = updatedGraphData.map((entry) => entry.intake / 1000);
+
+    const lineColors = dataValues.map((value, index) => {
+        if (index === 0) return "green"; // First day is always green
+        return value < dataValues[index - 1] ? "red" : "green";
+    });
+
+    setData({
+        labels,
+        datasets: [
+            {
+                label: "Water Intake (L)",
+                data: dataValues,
+                borderColor: lineColors,
+                backgroundColor: "rgba(59, 130, 246, 0.3)",
+                tension: 0.3,
+            },
+        ],
+    });
+}, [cupsClicked, history, currentDate]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -252,7 +379,7 @@ function WaterIntake() {
             className={`relative w-full h-full [perspective:1200px] flex items-center justify-center`}
           >
             <div
-              className={`absolute inset-0 p-6 rounded-3xl shadow-lg border border-blue-100 bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center w-full h-full select-none cursor-pointer transition-transform duration-500 [transform-style:preserve-3d] ${factAnim ? 'animate-factFlip' : ''}`}
+              className={`absolute inset-0 p-6 rounded-3xl shadow-lg border border-blue-100 bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center w-full h-full select-none cursor-pointer transition-transform duration-500 [transform-style:preserve-3d] ${factAnim ? 'rotate-y-180' : ''}`}
               style={{ minWidth: '100%', maxWidth: '800px', margin: '0 auto' }}
               onClick={handleFactClick}
             >
@@ -276,7 +403,7 @@ function WaterIntake() {
                     }`}
                     style={{
                       transformOrigin: "center bottom",
-                      boxShadow: cupsClicked[i] ? "0 0 10px 2px rgba(59, 130, 246, 0.7)" : "none",
+                      boxShadow: cupsClicked[i] ? "0 0 10px 2px rgba(59,130,246, 0.7)" : "none",
                     }}
                   >
                     <div className="text-6xl mb-1">💧</div>
@@ -352,13 +479,19 @@ function WaterIntake() {
             <Line data={data} options={options} />
           </div>
         </div>
-        <div className="flex flex-row gap-4 mt-10 w-full max-w-md mx-auto justify-center transition-all duration-500 ease-in-out">
-          <button
-            onClick={handleClearData}
-            className="px-6 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-xl hover:from-red-500 hover:to-red-700 transition-all duration-300 text-base font-semibold min-w-[140px] border-2 border-red-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transform hover:scale-105 active:scale-95"
-          >
-            <span role="img" aria-label="Clear Data" className="mr-2">🗑️</span>Clear All Data
-          </button>
+        <div className="flex flex-row gap-4 mt-10 w-full max-w-4xl mx-auto px-4 justify-center">
+            <button
+                onClick={handleNextDay}
+                className="px-6 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full shadow-xl hover:from-blue-500 hover:to-blue-700 transition-all duration-300 text-base font-semibold min-w-[140px] border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transform hover:scale-105 active:scale-95"
+            >
+                Next Day
+            </button>
+            <button
+                onClick={handleClearData}
+                className="px-6 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-xl hover:from-red-500 hover:to-red-700 transition-all duration-300 text-base font-semibold min-w-[140px] border-2 border-red-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transform hover:scale-105 active:scale-95"
+            >
+                Clear All Data
+            </button>
         </div>
       </main>
       <Footer />
