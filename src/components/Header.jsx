@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import runningManLogo from '../assets/running-man.svg';
-
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -13,7 +14,15 @@ function Header() {
     <header>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <a href="/" className="flex items-center">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => navigate('/')}
+            role="link"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') navigate('/');
+            }}
+          >
             <img
               src={runningManLogo}
               className="mr-3 h-6 sm:h-9"
@@ -22,7 +31,7 @@ function Header() {
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
               FitLife
             </span>
-          </a>
+          </div>
           <div className="flex items-center lg:order-2">
             <button
               type="button"
@@ -66,45 +75,69 @@ function Header() {
           >
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 w-full border-b border-gray-200 dark:border-gray-700 lg:border-0 lg:items-center">
               <li className="w-full text-center lg:w-auto lg:text-left">
-                <a
-                  href="/"
-                  className="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
-                  aria-current="page"
+                <span
+                  onClick={() => navigate('/')}
+                  className="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white cursor-pointer"
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate('/');
+                  }}
                 >
                   Dashboard
-                </a>
+                </span>
               </li>
               <li className="w-full text-center border-b border-gray-200 dark:border-gray-700 lg:border-0 lg:w-auto lg:text-left">
-                <a
-                  href="/water-intake"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent"
+                <span
+                  onClick={() => navigate('/water-intake')}
+                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent cursor-pointer"
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate('/water-intake');
+                  }}
                 >
                   Hydration Hub
-                </a>
+                </span>
               </li>
               <li className="w-full text-center border-b border-gray-200 dark:border-gray-700 lg:border-0 lg:w-auto lg:text-left">
-                <a
-                  href="/workout-traker"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent"
+                <span
+                  onClick={() => navigate('/workout-traker')}
+                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent cursor-pointer"
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate('/workout-traker');
+                  }}
                 >
                   Fitness Forge
-                </a>
+                </span>
               </li>
               <li className="w-full text-center border-b border-gray-200 dark:border-gray-700 lg:border-0 lg:w-auto lg:text-left">
-                <a
-                  href="/sleep-traker"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent"
+                <span
+                  onClick={() => navigate('/sleep-traker')}
+                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent cursor-pointer"
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate('/sleep-traker');
+                  }}
                 >
                   Rest & Recovery
-                </a>
+                </span>
               </li>
               <li className="w-full text-center border-b border-gray-200 dark:border-gray-700 lg:border-0 lg:w-auto lg:text-left">
-                <a
-                  href="/weight-traker"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent"
+                <span
+                  onClick={() => navigate('/weight-traker')}
+                  className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent cursor-pointer"
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate('/weight-traker');
+                  }}
                 >
                   Body Metrics
-                </a>
+                </span>
               </li>
             </ul>
           </div>

@@ -265,7 +265,7 @@ function WaterIntake() {
             {Array(TOTAL_CUPS)
               .fill(0)
               .map((_, i) => (
-                <div key={i} className="relative">
+                <div key={i} className="relative group">
                   <button
                     onClick={() => handleCupClick(i)}
                     aria-label={`Cup ${i + 1} of water`}
@@ -282,6 +282,12 @@ function WaterIntake() {
                     <div className="text-6xl mb-1">💧</div>
                     <div className="text-lg font-semibold">{CUP_VOLUME_ML / 1000} L</div>
                   </button>
+                  <span
+                    className="absolute bottom-full mb-2 px-2 py-1 text-sm text-white bg-blue-500 rounded shadow-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Click to log your water intake!
+                  </span>
                   {showHappy[i] && (
                     <span
                       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl pointer-events-none animate-fadeInOut"
@@ -333,6 +339,7 @@ function WaterIntake() {
           </div>
         </div>
         <div className="mt-12 p-6 rounded-3xl w-full max-w-4xl mx-auto overflow-x-auto shadow-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-blue-100 transition-all duration-700 ease-in-out">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-4 text-center"> Your Weakly Water Intake </h2>
           <div
             style={{
               minWidth: "100%",
