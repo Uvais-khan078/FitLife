@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import runningManLogo from '../assets/running-man.svg';
+
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,7 +15,7 @@ function Header() {
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <a href="/" className="flex items-center">
             <img
-              src="/assets/human-running-logo.svg"
+              src={runningManLogo}
               className="mr-3 h-6 sm:h-9"
               alt="FitLife Logo"
             />
