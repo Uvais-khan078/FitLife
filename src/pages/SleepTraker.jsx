@@ -336,7 +336,7 @@ function SleepTraker() {
             <div
               className="absolute bottom-0 left-1/2"
               style={{
-                width: '60%',
+                width: '85%', // Match the width of the alarm clock
                 transform: 'translateX(-50%)',
                 height: `${fillPercent}%`,
                 background: 'rgba(128, 90, 213, 0.85)',
@@ -354,7 +354,12 @@ function SleepTraker() {
               src={alarmClock}
               alt="Alarm Clock"
               className="relative max-h-full max-w-full z-10 select-none pointer-events-none"
-              style={{ filter: 'drop-shadow(0 4px 16px rgba(128, 90, 213, 0.12))' }}
+              style={{
+                filter: 'drop-shadow(0 4px 16px rgba(128, 90, 213, 0.12))',
+                width: '85%',
+                height: '85%',
+                margin: '10% 10% 10% 10%', // Increased margin to 10% from all corners
+              }}
             />
           </div>
         </div>
